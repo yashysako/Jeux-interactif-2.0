@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading Avancé — Formation Pro</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #080b12;
+  --card: #0f1420;
+  --card2: #141926;
+  --border: #1e2840;
+  --accent: #7c5cfc;
+  --accent2: #00d4aa;
+  --gold: #f0b429;
+  --red: #f16b6b;
+  --green: #3ecf8e;
+  --blue: #4f8ef7;
+  --text: #e8eaf0;
+  --muted: #4a5470;
+  --muted2: #7a85a0;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: radial-gradient(circle, rgba(124,92,252,0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events:none;
+  z-index:0;
+}
+
+body::after {
+  content:'';
+  position:fixed;
+  top:-200px; left:50%;
+  transform:translateX(-50%);
+  width:600px; height:400px;
+  background: radial-gradient(ellipse, rgba(124,92,252,0.08) 0%, transparent 70%);
+  pointer-events:none;
+  z-index:0;
+}
+
+.screen { display:none; position:relative; z-index:1; }
+.screen.active { display:flex; flex-direction:column; min-height:100vh; }
+
+@keyframes fadeDown  { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeUp    { from{opacity:0;transform:translateY(16px)}  to{opacity:1;transform:translateY(0)} }
+@keyframes popIn     { from{opacity:0;transform:scale(0.88)} to{opacity:1;transform:scale(1)} }
+@keyframes pulse     { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+@keyframes shake     { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }
+@keyframes correctPop{ 0%{transform:scale(1)} 50%{transform:scale(1.03)} 100%{transform:scale(1)} }
+@keyframes slideRight{ from{width:0} to{width:var(--w)} }
+@keyframes confFall  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+@keyframes certReveal{ from{opacity:0;transform:scale(0.92) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes glow      { 0%,100%{box-shadow:0 0 20px rgba(124,92,252,0.3)} 50%{box-shadow:0 0 40px rgba(124,92,252,0.6)} }
+
+/* ===== WELCOME / NAME SCREEN ===== */
+#welcome {
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  text-align:center;
+}
+
+.pro-badge {
+  display:inline-flex; align-items:center; gap:10px;
+  background: linear-gradient(135deg, rgba(124,92,252,0.15), rgba(0,212,170,0.1));
+  border:1px solid rgba(124,92,252,0.4);
+  border-radius:50px;
+  padding:8px 22px;
+  margin-bottom:32px;
+  font-family:'DM Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:2px;
+  color:var(--accent);
+  animation: fadeDown 0.6s ease both;
+}
+.pro-dot { width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite; }
+
+.welcome-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,9vw,6.5rem);
+  line-height:0.92;
+  letter-spacing:2px;
+  animation:fadeUp 0.6s 0.1s ease both;
+}
+.welcome-title .line1 { color:var(--text); }
+.welcome-title .line2 {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.welcome-title .line3 { color:var(--text); }
+
+.welcome-sub {
+  font-size:1rem;
+  color:var(--muted2);
+  margin:20px 0 32px;
+  max-width:500px;
+  line-height:1.7;
+  animation:fadeUp 0.6s 0.2s ease both;
+}
+
+.modules-grid {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  max-width:520px;
+  margin-bottom:36px;
+  animation:fadeUp 0.6s 0.3s ease both;
+}
+.module-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  text-align:left;
+  display:flex; align-items:center; gap:12px;
+}
+.module-icon { font-size:1.4rem; }
+.module-name { font-size:0.8rem; font-weight:700; color:var(--text); }
+.module-count { font-size:0.68rem; color:var(--muted2); font-family:'DM Mono',monospace; margin-top:2px; }
+
+/* NAME INPUT */
+.name-box {
+  width:100%;
+  max-width:420px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:24px;
+  margin-bottom:28px;
+  animation:fadeUp 0.6s 0.35s ease both;
+}
+.name-box label {
+  display:block;
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--accent2);
+  margin-bottom:10px;
+}
+.name-input {
+  width:100%;
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:13px 16px;
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-size:1rem;
+  font-weight:600;
+  outline:none;
+  transition:border-color 0.2s;
+}
+.name-input::placeholder { color:var(--muted); font-weight:400; }
+.name-input:focus { border-color:var(--accent); }
+
+.start-btn {
+  display:inline-flex; align-items:center; gap:12px;
+  background:linear-gradient(135deg, var(--accent), #9b7dff);
+  color:#fff;
+  border:none;
+  padding:18px 52px;
+  border-radius:12px;
+  font-family:'DM Sans',sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:all 0.2s;
+  letter-spacing:0.5px;
+  animation:fadeUp 0.6s 0.4s ease both;
+}
+.start-btn:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(124,92,252,0.4); }
+
+/* ===== GAME ===== */
+#game {
+  max-width:780px;
+  margin:0 auto;
+  width:100%;
+  padding:24px 20px 40px;
+}
+
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:28px; gap:14px;
+}
+.module-label {
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--accent);
+  background:rgba(124,92,252,0.12);
+  border:1px solid rgba(124,92,252,0.25);
+  padding:5px 12px;
+  border-radius:6px;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.progress-wrap { flex:1; }
+.progress-info {
+  display:flex; justify-content:space-between;
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+.progress-bar { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+.progress-fill {
+  height:100%;
+  background:linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius:2px;
+  transition:width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.score-badge {
+  font-family:'DM Mono',monospace;
+  font-size:0.75rem;
+  color:var(--gold);
+  background:rgba(240,180,41,0.1);
+  border:1px solid rgba(240,180,41,0.2);
+  padding:5px 12px;
+  border-radius:6px;
+  white-space:nowrap;
+}
+
+.q-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:28px;
+  margin-bottom:18px;
+  animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.q-number {
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  color:var(--muted);
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+.q-text { font-size:1.1rem; font-weight:600; line-height:1.6; color:var(--text); margin-bottom:18px; }
+
+.chart-container {
+  background:#060910;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:18px;
+}
+.chart-label {
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  color:var(--muted2);
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.chart-container svg { display:block; width:100%; }
+
+.options { display:flex; flex-direction:column; gap:9px; }
+.option-btn {
+  display:flex; align-items:center; gap:14px;
+  padding:15px 18px;
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:11px;
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-size:0.9rem;
+  cursor:pointer;
+  transition:all 0.18s;
+  text-align:left;
+  width:100%;
+}
+.option-btn:hover:not(:disabled) {
+  border-color:rgba(124,92,252,0.5);
+  background:rgba(124,92,252,0.06);
+  transform:translateX(4px);
+}
+.option-btn:disabled { cursor:default; }
+.option-letter {
+  width:28px; height:28px;
+  border-radius:7px;
+  background:var(--border);
+  border:1px solid var(--muted);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;
+  color:var(--muted2);
+  flex-shrink:0;
+  transition:all 0.18s;
+}
+.option-btn.correct { border-color:var(--green); background:rgba(62,207,142,0.08); animation:correctPop 0.4s ease; }
+.option-btn.correct .option-letter { background:var(--green); color:#0a0d14; border-color:transparent; }
+.option-btn.wrong   { border-color:var(--red); background:rgba(241,107,107,0.07); animation:shake 0.4s ease; }
+.option-btn.wrong   .option-letter { background:var(--red); color:#fff; border-color:transparent; }
+
+.feedback-box {
+  border-radius:12px; padding:18px 20px;
+  margin-bottom:16px; display:none;
+  animation:fadeUp 0.3s ease both;
+}
+.feedback-box.show { display:block; }
+.feedback-box.correct-fb { background:rgba(62,207,142,0.07); border:1px solid rgba(62,207,142,0.25); }
+.feedback-box.wrong-fb   { background:rgba(241,107,107,0.07); border:1px solid rgba(241,107,107,0.25); }
+.fb-title { font-weight:700; font-size:0.88rem; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.fb-title.ok   { color:var(--green); }
+.fb-title.nope { color:var(--red); }
+.fb-explain { font-size:0.83rem; color:var(--muted2); line-height:1.7; }
+.fb-explain strong { color:var(--text); }
+
+.next-btn {
+  width:100%; padding:15px;
+  background:linear-gradient(135deg, var(--accent), #9b7dff);
+  color:#fff; border:none; border-radius:12px;
+  font-family:'DM Sans',sans-serif;
+  font-size:0.98rem; font-weight:700;
+  cursor:pointer; transition:all 0.2s;
+  display:none; letter-spacing:0.3px;
+}
+.next-btn.show { display:block; }
+.next-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(124,92,252,0.35); }
+
+/* ===== RESULT ===== */
+#result {
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  text-align:center;
+}
+.result-icon { font-size:3.5rem; margin-bottom:16px; animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+.result-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(2.2rem,7vw,4.5rem); letter-spacing:2px; animation:fadeUp 0.5s 0.1s ease both; }
+.result-score-big { font-family:'DM Mono',monospace; font-size:clamp(1.2rem,4vw,2rem); color:var(--accent); margin:14px 0; animation:fadeUp 0.5s 0.2s ease both; }
+.result-msg { color:var(--muted2); max-width:440px; line-height:1.7; margin-bottom:32px; animation:fadeUp 0.5s 0.3s ease both; }
+
+.result-bars { width:100%; max-width:520px; display:flex; flex-direction:column; gap:11px; margin-bottom:32px; animation:fadeUp 0.5s 0.4s ease both; }
+.result-bar-row { display:grid; grid-template-columns:190px 1fr 48px; align-items:center; gap:12px; text-align:left; }
+.result-bar-label { font-size:0.76rem; color:var(--muted2); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.result-bar-track { height:7px; background:var(--border); border-radius:4px; overflow:hidden; }
+.result-bar-fill { height:100%; border-radius:4px; --w:0%; width:var(--w); animation:slideRight 0.8s 0.6s cubic-bezier(0.4,0,0.2,1) both; }
+.result-bar-pct { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--accent); text-align:right; }
+
+.action-btns { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; animation:fadeUp 0.5s 0.5s ease both; }
+.btn-review {
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--card); border:1px solid var(--border);
+  color:var(--text); padding:14px 28px; border-radius:12px;
+  font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:600;
+  cursor:pointer; transition:all 0.2s;
+}
+.btn-review:hover { border-color:var(--accent); color:var(--accent); }
+.btn-cert {
+  display:inline-flex; align-items:center; gap:10px;
+  background:linear-gradient(135deg, var(--gold), #f5a623);
+  color:#0a0d14; border:none; padding:14px 28px; border-radius:12px;
+  font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:700;
+  cursor:pointer; transition:all 0.2s;
+}
+.btn-cert:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(240,180,41,0.3); }
+.btn-restart {
+  display:inline-flex; align-items:center; gap:10px;
+  background:linear-gradient(135deg, var(--accent), #9b7dff);
+  color:#fff; border:none; padding:14px 28px; border-radius:12px;
+  font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:700;
+  cursor:pointer; transition:all 0.2s;
+}
+.btn-restart:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(124,92,252,0.3); }
+
+/* Perfect score banner */
+.perfect-banner {
+  background:linear-gradient(135deg,rgba(240,180,41,0.15),rgba(62,207,142,0.1));
+  border:1px solid rgba(240,180,41,0.4);
+  border-radius:14px;
+  padding:18px 24px;
+  margin-bottom:24px;
+  max-width:480px;
+  animation:fadeUp 0.5s 0.35s ease both;
+}
+.perfect-banner p { color:var(--gold); font-weight:600; font-size:0.92rem; line-height:1.6; }
+
+/* ===== REVIEW ===== */
+#review {
+  max-width:780px;
+  margin:0 auto;
+  width:100%;
+  padding:28px 20px 50px;
+}
+.review-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
+.review-header h2 { font-family:'Bebas Neue',sans-serif; font-size:2.2rem; letter-spacing:1px; }
+.back-btn {
+  background:var(--card); border:1px solid var(--border);
+  color:var(--muted2); padding:8px 18px; border-radius:8px;
+  font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:600;
+  cursor:pointer; transition:all 0.2s;
+}
+.back-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+.review-item {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:16px; padding:22px; margin-bottom:14px;
+  animation:fadeUp 0.4s ease both;
+}
+.review-item.wrong-item   { border-left:3px solid var(--red); }
+.review-item.correct-item { border-left:3px solid var(--green); }
+.review-q-label {
+  display:flex; align-items:center; gap:10px;
+  font-family:'DM Mono',monospace; font-size:0.65rem;
+  color:var(--muted); letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:10px;
+}
+.review-status { padding:2px 8px; border-radius:4px; font-size:0.6rem; font-weight:700; }
+.status-correct { background:rgba(62,207,142,0.15); color:var(--green); }
+.status-wrong   { background:rgba(241,107,107,0.15); color:var(--red); }
+.review-q-text { font-size:0.92rem; font-weight:600; color:var(--text); margin-bottom:12px; line-height:1.5; }
+.review-answers { display:flex; flex-direction:column; gap:7px; margin-bottom:12px; }
+.review-ans {
+  padding:10px 14px; border-radius:8px; font-size:0.82rem;
+  display:flex; align-items:center; gap:10px;
+  border:1px solid var(--border); background:var(--card2); color:var(--muted2);
+}
+.review-ans.your-wrong  { border-color:var(--red);   background:rgba(241,107,107,0.07); color:var(--red); }
+.review-ans.the-correct { border-color:var(--green); background:rgba(62,207,142,0.07);  color:var(--green); }
+.review-explanation {
+  font-size:0.8rem; color:var(--muted2); line-height:1.65;
+  padding:12px 14px;
+  background:rgba(124,92,252,0.05);
+  border:1px solid rgba(124,92,252,0.15);
+  border-radius:8px;
+}
+.review-explanation strong { color:var(--text); }
+
+/* ===== CERTIFICATE ===== */
+#certificate {
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+}
+.cert-wrapper {
+  width:100%; max-width:680px;
+  background:var(--card);
+  border:2px solid rgba(124,92,252,0.4);
+  border-radius:24px;
+  padding:48px 40px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  animation:certReveal 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.cert-wrapper::before {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse at 10% 10%, rgba(124,92,252,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 90%, rgba(0,212,170,0.06) 0%, transparent 50%);
+  pointer-events:none;
+}
+.cert-corner { position:absolute; width:80px; height:80px; border:2px solid rgba(240,180,41,0.3); }
+.cert-corner.tl { top:16px; left:16px;   border-right:none; border-bottom:none; border-radius:8px 0 0 0; }
+.cert-corner.tr { top:16px; right:16px;  border-left:none;  border-bottom:none; border-radius:0 8px 0 0; }
+.cert-corner.bl { bottom:16px; left:16px;  border-right:none; border-top:none;    border-radius:0 0 0 8px; }
+.cert-corner.br { bottom:16px; right:16px; border-left:none;  border-top:none;    border-radius:0 0 8px 0; }
+
+.cert-badge-top { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+.cert-logo {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.8rem; letter-spacing:4px;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  margin-bottom:6px;
+}
+.cert-divider { width:80px; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:16px auto; }
+.cert-title-text { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:2px; color:var(--muted2); text-transform:uppercase; margin-bottom:20px; }
+.cert-name-line { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.8rem,5vw,3rem); letter-spacing:2px; color:var(--text); margin-bottom:6px; }
+.cert-formation { font-size:0.95rem; color:var(--muted2); margin-bottom:24px; line-height:1.6; }
+.cert-formation strong { color:var(--accent2); }
+.cert-score-row { display:flex; justify-content:center; gap:28px; margin-bottom:28px; flex-wrap:wrap; }
+.cert-stat { background:rgba(124,92,252,0.08); border:1px solid rgba(124,92,252,0.2); border-radius:12px; padding:14px 22px; }
+.cert-stat-val { font-family:'DM Mono',monospace; font-size:1.4rem; font-weight:700; color:var(--gold); }
+.cert-stat-lbl { font-size:0.68rem; color:var(--muted2); font-family:'DM Mono',monospace; margin-top:4px; letter-spacing:1px; }
+.cert-modules { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:28px; }
+.cert-module-tag { font-family:'DM Mono',monospace; font-size:0.62rem; padding:4px 12px; border-radius:20px; border:1px solid rgba(124,92,252,0.25); color:var(--muted2); background:rgba(124,92,252,0.06); }
+.cert-date { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); letter-spacing:1px; margin-bottom:24px; }
+.cert-seal { width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:1.6rem; animation:glow 2s infinite; }
+.cert-perfect { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--gold); letter-spacing:2px; margin-bottom:20px; text-transform:uppercase; }
+.cert-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.btn-print { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,var(--gold),#f5a623); color:#0a0d14; border:none; padding:12px 28px; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.btn-print:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(240,180,41,0.3); }
+.btn-back-result { display:inline-flex; align-items:center; gap:8px; background:var(--card2); border:1px solid var(--border); color:var(--muted2); padding:12px 28px; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+.btn-back-result:hover { border-color:var(--accent); color:var(--accent); }
+
+/* Confetti */
+.confetti-wrap { position:fixed; inset:0; pointer-events:none; z-index:50; }
+.confetti-piece { position:absolute; border-radius:2px; animation:confFall linear both; }
+
+@media print {
+  body { background:#fff !important; }
+  .cert-actions { display:none !important; }
+  .cert-wrapper { border-color:#ccc !important; background:#fff !important; color:#000 !important; }
+  .cert-logo { color:#7c5cfc !important; -webkit-text-fill-color:#7c5cfc !important; }
+  #certificate { background:#fff; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== WELCOME ===== -->
+<div class="screen active" id="welcome">
+  <div class="pro-badge"><span class="pro-dot"></span> FORMATION AVANCÉE · SMART MONEY CONCEPTS</div>
+  <h1 class="welcome-title">
+    <div class="line1">FORMATION</div>
+    <div class="line2">TRADING</div>
+    <div class="line3">AVANCÉ</div>
+  </h1>
+  <p class="welcome-sub">Teste tes connaissances sur les concepts avancés utilisés par les traders professionnels. Score parfait = Certificat.</p>
+
+  <div class="modules-grid">
+    <div class="module-card"><div class="module-icon">🛡️</div><div><div class="module-name">Gestion du Risque</div><div class="module-count">5 questions</div></div></div>
+    <div class="module-card"><div class="module-icon">⚡</div><div><div class="module-name">Fair Value Gap</div><div class="module-count">4 questions</div></div></div>
+    <div class="module-card"><div class="module-icon">🧱</div><div><div class="module-name">Order Block</div><div class="module-count">4 questions</div></div></div>
+    <div class="module-card"><div class="module-icon">💧</div><div><div class="module-name">Liquidité · Drawdown · Consistance</div><div class="module-count">7 questions</div></div></div>
+  </div>
+
+  <div class="name-box">
+    <label>✦ &nbsp;Ton prénom et nom (pour le certificat)</label>
+    <input class="name-input" id="player-name" type="text" placeholder="Ex : Jean Dupont" maxlength="40" />
+  </div>
+
+  <button class="start-btn" onclick="startGame()">▶ &nbsp;COMMENCER LE QUIZ</button>
+</div>
+
+<!-- ===== GAME ===== -->
+<div class="screen" id="game">
+  <div class="topbar">
+    <div class="module-label" id="module-label">MODULE</div>
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="q-counter">Question 1/20</span>
+        <span id="q-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="score-badge" id="score-badge">✦ 0 pts</div>
+  </div>
+
+  <div class="q-card" id="q-card">
+    <div class="q-number" id="q-number">QUESTION 01</div>
+    <div class="q-text" id="q-text"></div>
+    <div class="chart-container" id="chart-wrap" style="display:none">
+      <div class="chart-label">📊 GRAPHIQUE — IDENTIFIE LE CONCEPT</div>
+      <div id="chart-svg"></div>
+    </div>
+    <div class="options" id="options"></div>
+  </div>
+
+  <div class="feedback-box" id="feedback">
+    <div class="fb-title" id="fb-title"></div>
+    <div class="fb-explain" id="fb-explain"></div>
+  </div>
+
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">QUESTION SUIVANTE →</button>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div class="screen" id="result">
+  <div class="confetti-wrap" id="confetti"></div>
+  <div class="result-icon" id="result-icon">🏆</div>
+  <h2 class="result-title" id="result-title">RÉSULTATS</h2>
+  <div class="result-score-big" id="result-score-big"></div>
+  <p class="result-msg" id="result-msg"></p>
+  <div id="perfect-banner-wrap"></div>
+  <div class="result-bars" id="result-bars"></div>
+  <div class="action-btns">
+    <button class="btn-review" onclick="showReview()">📋 Revoir mes erreurs</button>
+    <button class="btn-cert" id="btn-cert" onclick="showCertificate()" style="display:none">🏆 Mon Certificat</button>
+    <button class="btn-restart" onclick="restartGame()">↺ Rejouer</button>
+  </div>
+</div>
+
+<!-- ===== REVIEW ===== -->
+<div class="screen" id="review">
+  <div class="review-header">
+    <h2>📋 MODE RÉVISION</h2>
+    <button class="back-btn" onclick="showScreen('result')">← Retour</button>
+  </div>
+  <div id="review-content"></div>
+</div>
+
+<!-- ===== CERTIFICATE ===== -->
+<div class="screen" id="certificate">
+  <div class="confetti-wrap" id="confetti-cert"></div>
+  <div class="cert-wrapper">
+    <div class="cert-corner tl"></div>
+    <div class="cert-corner tr"></div>
+    <div class="cert-corner bl"></div>
+    <div class="cert-corner br"></div>
+
+    <div class="cert-badge-top">✦ CERTIFICAT DE RÉUSSITE ✦</div>
+    <div class="cert-logo">TRADING AVANCÉ</div>
+    <div class="cert-divider"></div>
+    <div class="cert-title-text">Ce certificat atteste que</div>
+    <div class="cert-name-line" id="cert-name-display">—</div>
+    <div class="cert-formation">
+      a complété avec succès et obtenu un score parfait à la<br>
+      <strong>Formation Avancée en Trading</strong><br>
+      Gestion du Risque · Smart Money Concepts · Analyse Avancée
+    </div>
+
+    <div class="cert-score-row">
+      <div class="cert-stat">
+        <div class="cert-stat-val" id="cert-score">200/200</div>
+        <div class="cert-stat-lbl">SCORE</div>
+      </div>
+      <div class="cert-stat">
+        <div class="cert-stat-val">100%</div>
+        <div class="cert-stat-lbl">RÉUSSITE</div>
+      </div>
+      <div class="cert-stat">
+        <div class="cert-stat-val" id="cert-correct">20/20</div>
+        <div class="cert-stat-lbl">BONNES RÉP.</div>
+      </div>
+    </div>
+
+    <div class="cert-modules">
+      <span class="cert-module-tag">🛡️ Gestion du Risque</span>
+      <span class="cert-module-tag">⚡ Fair Value Gap</span>
+      <span class="cert-module-tag">🧱 Order Block</span>
+      <span class="cert-module-tag">💧 Zones de Liquidité</span>
+      <span class="cert-module-tag">📉 Drawdown</span>
+      <span class="cert-module-tag">📋 Règle de Consistance</span>
+    </div>
+
+    <div class="cert-seal">🏆</div>
+    <div class="cert-perfect">★ SCORE PARFAIT — 20/20 ★</div>
+    <div class="cert-date" id="cert-date">—</div>
+
+    <div class="cert-actions">
+      <button class="btn-print" onclick="window.print()">🖨️ Imprimer / Sauvegarder</button>
+      <button class="btn-back-result" onclick="showScreen('result')">← Retour</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// QUESTIONS — réponses correctes bien distribuées sur A/B/C/D
+// Distribution : A×5, B×5, C×5, D×5
+// ============================================================
+const QUESTIONS = [
+
+  // ── MODULE 1 : GESTION DU RISQUE (correct: A, C, D, A, C) ──
+  {
+    module: "🛡️ GESTION DU RISQUE",
+    moduleColor: "#3ecf8e",
+    text: "La règle d'or de la gestion du risque stipule de ne jamais risquer plus de combien de son capital total sur un seul trade ?",
+    chart: null,
+    options: [
+      "1 à 2% du capital par trade",   // ← CORRECT A
+      "10 à 15% par trade",
+      "25% par trade pour maximiser les gains",
+      "Il n'y a pas de limite recommandée"
+    ],
+    correct: 0,
+    explanation: "La règle universelle : <strong>ne jamais risquer plus de 1 à 2% du capital total</strong> par trade. Avec 10 000$, cela représente 100 à 200$ de perte maximum. Cette règle permet de survivre à de longues séries de pertes sans mettre en danger le compte."
+  },
+  {
+    module: "🛡️ GESTION DU RISQUE",
+    moduleColor: "#3ecf8e",
+    text: "Dans quel ordre doit-on obligatoirement procéder avant d'ouvrir un trade ?",
+    chart: null,
+    options: [
+      "Entrer d'abord, calculer le stop loss ensuite selon l'évolution",
+      "Regarder uniquement le profit potentiel, puis décider",
+      "Calculer le stop loss ET le take profit AVANT d'entrer en position",  // ← CORRECT C
+      "Trader selon son intuition du moment"
+    ],
+    correct: 2,
+    explanation: "Le stop loss et le take profit doivent être <strong>définis AVANT l'entrée</strong>. C'est la base absolue de la discipline. Cela permet de connaître le ratio Risque/Récompense avant le trade, et d'éliminer toute décision émotionnelle une fois en position."
+  },
+  {
+    module: "🛡️ GESTION DU RISQUE",
+    moduleColor: "#3ecf8e",
+    text: "Après 3 pertes consécutives, un trader déplace son stop loss plus loin pour 'laisser le trade respirer'. Que doit-on en penser ?",
+    chart: null,
+    options: [
+      "C'est une stratégie avancée réservée aux experts",
+      "C'est acceptable si le setup technique est encore valide",
+      "C'est une erreur — le stop ne doit jamais être élargi après l'entrée",
+      "C'est une bonne idée pour laisser le marché évoluer librement"  // ← (D faux)
+    ],
+    correct: 2,  // C
+    explanation: "<strong>Déplacer son stop loss plus loin est l'une des pires habitudes</strong> en trading. Cela augmente la perte potentielle, invalide le plan de trading initial, et est quasi toujours motivé par la peur émotionnelle d'avoir tort. Le stop est calculé avant — il ne bouge jamais vers plus de risque."
+  },
+  {
+    module: "🛡️ GESTION DU RISQUE",
+    moduleColor: "#3ecf8e",
+    text: "Après une belle série de gains, un trader double sa taille de position car il se sent 'en confiance'. Quelle est la conséquence principale ?",
+    chart: null,
+    options: [
+      "Il prend une décision émotionnelle (overconfidence) qui dérègle toute sa gestion du risque",  // ← CORRECT A
+      "C'est une stratégie rationnelle pour profiter d'une série positive",
+      "C'est correct si son winrate dépasse 60%",
+      "Cela n'a aucun impact sur la gestion du risque à long terme"
+    ],
+    correct: 0,
+    explanation: "Grossir ses lots par euphorie, c'est une <strong>décision 100% émotionnelle (overconfidence)</strong>. Les émotions n'ont aucune place dans le trading professionnel. La taille de position doit être calculée <em>mécaniquement</em> selon les règles de gestion, jamais selon le ressenti du moment."
+  },
+  {
+    module: "🛡️ GESTION DU RISQUE",
+    moduleColor: "#3ecf8e",
+    text: "Quel est le vrai danger de déplacer son stop loss OU d'augmenter ses lots en cours de trade perdant ?",
+    chart: null,
+    options: [
+      "Cela n'a d'impact que sur les marchés très volatils comme le crypto",
+      "Le courtier peut fermer le compte pour comportement abusif",
+      "Cela améliore temporairement le ratio risque/récompense",
+      "On risque de transformer une petite perte contrôlée en perte catastrophique qui détruit le compte"  // ← CORRECT D
+    ],
+    correct: 3,
+    explanation: "Ces deux comportements peuvent <strong>transformer une perte de 100$ en perte de 1 000$ ou plus</strong>. C'est ainsi que la majorité des comptes de trading sont liquidés. Un compte peut survivre des centaines de petites pertes maîtrisées — mais pas une seule perte non contrôlée."
+  },
+
+  // ── MODULE 2 : FAIR VALUE GAP (correct: C, A, D, B) ──
+  {
+    module: "⚡ FAIR VALUE GAP (FVG)",
+    moduleColor: "#4f8ef7",
+    text: "Observe ce graphique. Un vide existe entre la mèche haute de la bougie 1 et la mèche basse de la bougie 3. Comment appelle-t-on ce pattern ?",
+    chart: "fvg_bull",
+    options: [
+      "Un Order Block haussier",
+      "Une zone de support classique",
+      "Un Fair Value Gap (FVG) haussier",  // ← CORRECT C
+      "Un Double Bottom"
+    ],
+    correct: 2,
+    explanation: "C'est un <strong>Fair Value Gap (FVG) haussier</strong>. Il se forme quand une bougie impulsive (bougie 2) est si forte que la bougie 1 et la bougie 3 ne se chevauchent pas — créant un vide de prix. Ce déséquilibre est une zone que le marché reviendra souvent combler."
+  },
+  {
+    module: "⚡ FAIR VALUE GAP (FVG)",
+    moduleColor: "#4f8ef7",
+    text: "Comment identifier visuellement un Fair Value Gap sur un graphique en bougies ?",
+    chart: null,
+    options: [
+      "La mèche haute de la bougie 1 ne touche pas la mèche basse de la bougie 3, sur 3 bougies consécutives",  // ← CORRECT A
+      "C'est le croisement de deux moyennes mobiles",
+      "C'est une zone où le volume est au maximum",
+      "C'est l'espace entre un support et une résistance horizontaux"
+    ],
+    correct: 0,
+    explanation: "Le FVG se repère sur <strong>3 bougies consécutives</strong> : la mèche haute de la bougie 1 ne touche pas la mèche basse de la bougie 3. Ce vide = zone de déséquilibre. <strong>FVG haussier</strong> = bougie impulsive vers le haut. <strong>FVG baissier</strong> = bougie impulsive vers le bas."
+  },
+  {
+    module: "⚡ FAIR VALUE GAP (FVG)",
+    moduleColor: "#4f8ef7",
+    text: "Pourquoi le prix revient-il fréquemment combler un Fair Value Gap ?",
+    chart: null,
+    options: [
+      "Par pur hasard, sans explication logique",
+      "Parce que les traders particuliers placent tous leurs ordres exactement là",
+      "C'est une règle imposée par les régulateurs des marchés financiers",
+      "Les institutions ont des ordres non exécutés dans ces zones et le marché y revient pour les remplir"  // ← CORRECT D
+    ],
+    correct: 3,
+    explanation: "Les FVG représentent des zones où le prix a bougé trop vite — les <strong>institutions ont des ordres non exécutés</strong> dans ces zones. Le marché y retourne pour permettre l'exécution de ces ordres et rééquilibrer l'offre/demande. C'est la logique fondamentale du Smart Money."
+  },
+  {
+    module: "⚡ FAIR VALUE GAP (FVG)",
+    moduleColor: "#4f8ef7",
+    text: "Dans quelle situation un FVG haussier représente-t-il une opportunité d'achat optimale ?",
+    chart: null,
+    options: [
+      "Seulement si le FVG date de moins de 24 heures",
+      "Quand le prix revient tester le FVG en pullback dans une tendance haussière confirmée",  // ← CORRECT B
+      "Uniquement si le FVG est visible sur un graphique de 1 minute",
+      "Quand le prix est déjà bien au-dessus du FVG depuis plusieurs jours"
+    ],
+    correct: 1,
+    explanation: "La stratégie classique : attendre que le prix <strong>revienne sur le FVG en pullback</strong>, puis chercher un signal d'entrée long. La confluence d'un FVG haussier dans une tendance haussière globale est une zone d'achat à fort potentiel. Plus le timeframe est élevé (H4, Daily), plus le FVG est significatif."
+  },
+
+  // ── MODULE 3 : ORDER BLOCK (correct: D, C, A, B) ──
+  {
+    module: "🧱 ORDER BLOCK",
+    moduleColor: "#f0b429",
+    text: "Observe ce graphique. Quelle est la définition exacte d'un Order Block haussier (Bullish OB) ?",
+    chart: "order_block",
+    options: [
+      "La première bougie haussière d'une tendance montante",
+      "N'importe quelle zone de consolidation horizontale visible",
+      "Le sommet le plus élevé avant un retournement baissier",
+      "La dernière bougie baissière (rouge) avant un fort mouvement impulsif à la hausse"  // ← CORRECT D
+    ],
+    correct: 3,
+    explanation: "Un <strong>Order Block haussier = la dernière bougie BAISSIÈRE (rouge)</strong> avant un fort mouvement impulsif à la HAUSSE. C'est là que les institutions ont placé leurs ordres d'achat massifs. Quand le prix y revient en pullback, c'est souvent une excellente zone d'entrée longue."
+  },
+  {
+    module: "🧱 ORDER BLOCK",
+    moduleColor: "#f0b429",
+    text: "Pourquoi les Order Blocks sont-ils des zones particulièrement importantes en analyse institutionnelle ?",
+    chart: null,
+    options: [
+      "Parce que ce sont des niveaux psychologiques ronds (ex: 1.0000, 50 000$)",
+      "Parce que les algorithmes de trading sont programmés pour les éviter",
+      "C'est là que les institutions ont placé leurs ordres — elles y reviennent pour compléter leurs positions",  // ← CORRECT C
+      "Ils sont uniquement valables sur le marché Forex, pas les autres actifs"
+    ],
+    correct: 2,
+    explanation: "Les OB marquent l'<strong>empreinte des gros acteurs</strong>. Quand une institution veut acheter 1 milliard $, elle ne peut pas tout exécuter en une fois. Elle étale ses achats — et revient sur ces zones pour compléter ses positions. C'est la logique centrale du Smart Money Concept."
+  },
+  {
+    module: "🧱 ORDER BLOCK",
+    moduleColor: "#f0b429",
+    text: "Comment confirmer qu'un Order Block est encore 'actif' et exploitable ?",
+    chart: null,
+    options: [
+      "Il n'a jamais encore été retesté et la structure de marché globale reste haussière",  // ← CORRECT A
+      "Il a été touché plus de 5 fois par le prix, ce qui le renforce",
+      "Il date d'au maximum 48 heures, sinon il perd sa validité",
+      "Il est visible uniquement en affichage de bougies japonaises"
+    ],
+    correct: 0,
+    explanation: "Un OB est <strong>le plus puissant lors du premier retest</strong> — avant d'être 'consommé'. Une fois retesté plusieurs fois, son efficacité diminue. Il faut aussi que la <strong>structure du marché soit préservée</strong> (tendance principale intacte) pour que l'OB reste valide comme zone d'entrée."
+  },
+  {
+    module: "🧱 ORDER BLOCK",
+    moduleColor: "#f0b429",
+    text: "Où placer son stop loss lors d'une entrée sur un Order Block haussier ?",
+    chart: null,
+    options: [
+      "Au-dessus du haut de l'Order Block",
+      "Juste en dessous du bas de l'Order Block pour invalider la zone si cassé",  // ← CORRECT B
+      "À exactement 50 pips de distance, peu importe la configuration",
+      "Au niveau du plus haut de la bougie impulsive qui a suivi l'OB"
+    ],
+    correct: 1,
+    explanation: "Le stop loss se place <strong>juste sous le bas de l'OB</strong>. Si le prix casse en dessous, la zone est invalidée — les ordres institutionnels ne sont plus là. Cela donne un stop précis, logique, et permet de calculer un ratio risque/récompense favorable avant d'entrer."
+  },
+
+  // ── MODULE 4 : LIQUIDITÉ + DRAWDOWN + CONSISTANCE (correct: C, D, B, A, D, C, A) ──
+  {
+    module: "💧 LIQUIDITÉ & ZONES CLÉS",
+    moduleColor: "#f16b6b",
+    text: "Observe ce graphique. Le prix touche deux fois le même sommet. Que vont probablement faire les gros acteurs avec cette liquidité concentrée ?",
+    chart: "liquidity",
+    options: [
+      "Ignorer complètement ce niveau, il n'a aucune signification institutionnelle",
+      "Placer leurs ordres d'achat exactement à ce niveau double sommet",
+      "Pousser le prix au-dessus pour déclencher les stops, capter la liquidité, puis inverser à la baisse",  // ← CORRECT C
+      "Attendre que le prix baisse naturellement avant d'intervenir"
+    ],
+    correct: 2,
+    explanation: "Les <strong>zones de liquidité</strong> concentrent des milliers de stop loss. Les gros acteurs ont besoin de cette liquidité pour exécuter leurs ordres massifs. Ils font monter le prix <em>juste au-dessus</em> pour déclencher ces stops (ordres de vente), récupèrent la liquidité, puis inversent. C'est le mécanisme du 'stop hunt'."
+  },
+  {
+    module: "💧 LIQUIDITÉ & ZONES CLÉS",
+    moduleColor: "#f16b6b",
+    text: "Où se trouvent typiquement les zones de liquidité sur un graphique ?",
+    chart: null,
+    options: [
+      "Uniquement aux retracements de Fibonacci à 50% et 61.8%",
+      "Au milieu exact d'une tendance, sans indicateur particulier",
+      "Exclusivement sur les graphiques de timeframe journalier et au-dessus",
+      "Sous les plus bas évidents, au-dessus des plus hauts évidents, et aux niveaux psychologiques ronds"  // ← CORRECT D
+    ],
+    correct: 3,
+    explanation: "La liquidité se trouve là où les traders <em>placent logiquement leurs stops</em> : <strong>sous les supports évidents, au-dessus des résistances, sous les lignes de tendance populaires, aux chiffres ronds</strong>. Plus un niveau est 'évident' pour les particuliers, plus les institutions l'utiliseront pour chasser les stops."
+  },
+  {
+    module: "📉 DRAWDOWN",
+    moduleColor: "#f16b6b",
+    text: "Qu'est-ce qu'un Drawdown en trading ?",
+    chart: null,
+    options: [
+      "Une technique pour augmenter la taille des positions progressivement",
+      "La baisse du capital depuis son pic le plus haut jusqu'à un point bas — mesure de la perte maximale subie",  // ← CORRECT B
+      "Un type de graphique spécialisé pour analyser la volatilité",
+      "Le montant minimum requis pour ouvrir un compte chez un courtier"
+    ],
+    correct: 1,
+    explanation: "Le <strong>Drawdown</strong> mesure la <strong>perte depuis le pic du capital jusqu'au creux</strong>. Si le compte passe de 10 000$ à 8 000$, le drawdown est de 20%. C'est l'indicateur clé de la robustesse d'une stratégie. Tout trader professionnel surveille son drawdown en permanence."
+  },
+  {
+    module: "📉 DRAWDOWN",
+    moduleColor: "#f16b6b",
+    text: "Quelle est la différence entre Maximum Drawdown, Daily Drawdown et Closing Drawdown ?",
+    chart: null,
+    options: [
+      "Max DD = perte totale historique depuis le pic. Daily DD = limite de perte par jour. Closing DD = calculé sur les prix de clôture uniquement",  // ← CORRECT A
+      "Ce sont trois noms différents pour désigner exactement la même chose",
+      "Maximum DD s'applique aux cryptos, Daily DD au Forex, Closing DD aux actions uniquement",
+      "Ils mesurent tous les gains potentiels, non pas les pertes réelles"
+    ],
+    correct: 0,
+    explanation: "<strong>Maximum Drawdown</strong> : plus grande perte cumulée depuis le pic du capital (ex: -20% historique). <strong>Daily Drawdown</strong> : limite de perte autorisée en une journée (règle prop firm, ex: -5%/jour). <strong>Closing Drawdown</strong> : calculé uniquement sur les prix de clôture, sans tenir compte des fluctuations intra-journalières."
+  },
+  {
+    module: "📉 DRAWDOWN",
+    moduleColor: "#f16b6b",
+    text: "Dans les règles d'une Prop Firm, le 'Daily Drawdown' de 5% signifie concrètement…",
+    chart: null,
+    options: [
+      "Réaliser un profit minimum de 5% chaque jour de trading",
+      "Utiliser un levier maximum de 5:1 par trade ouvert",
+      "Ne jamais accumuler plus de 5% de perte totale sur toute la durée du challenge",
+      "Perdre plus de 5% en une seule journée entraîne l'échec automatique du challenge"  // ← CORRECT D
+    ],
+    correct: 3,
+    explanation: "Le <strong>Daily Drawdown</strong> est une règle stricte des prop firms : si tu perds plus de 5% (ou le % fixé) en <em>une seule journée</em>, le challenge échoue automatiquement. Cette règle oblige à avoir une gestion du risque rigoureuse quotidiennement et protège le capital de la société."
+  },
+  {
+    module: "📋 RÈGLE DE CONSISTANCE",
+    moduleColor: "#7c5cfc",
+    text: "Qu'est-ce que la 'règle de consistance' dans le trading professionnel ?",
+    chart: null,
+    options: [
+      "Faire exactement le même nombre de trades chaque jour sans exception",
+      "Ne jamais changer de stratégie de trading, même si elle est perdante",
+      "Trader de façon régulière et reproductible — même risque, même processus, même discipline à chaque trade",  // ← CORRECT C
+      "Trader exclusivement les mêmes actifs tout au long de sa carrière"
+    ],
+    correct: 2,
+    explanation: "La <strong>règle de consistance</strong> signifie appliquer son plan de trading de manière <strong>répétable et mécanique</strong> : même pourcentage de risque, même processus d'analyse, même gestion émotionnelle, trade après trade. Sans consistance, impossible de savoir si une stratégie est réellement rentable ou si les résultats sont dus au hasard."
+  },
+  {
+    module: "📋 RÈGLE DE CONSISTANCE",
+    moduleColor: "#7c5cfc",
+    text: "Pourquoi un plan de trading consistant est-il mathématiquement plus puissant qu'essayer d'avoir toujours raison ?",
+    chart: null,
+    options: [
+      "Un plan consistant avec 55% de winrate et ratio R:R 1:2 est profitable à long terme, même sans 'avoir raison' souvent",  // ← CORRECT A
+      "Avoir raison est toujours la priorité absolue en trading professionnel",
+      "La consistance n'a d'importance que pour les traders qui passent des challenges de prop firms",
+      "Les deux approches donnent exactement les mêmes résultats sur le long terme"
+    ],
+    correct: 0,
+    explanation: "Un trader avec <strong>55% de winrate et un ratio R:R de 1:2</strong> est mathématiquement et mécaniquement profitable sur le long terme. La consistance permet de laisser jouer les probabilités. Un trader inconstant — qui change de stratégie, de taille de lots, qui laisse ses émotions décider — ne peut jamais mesurer ni améliorer sa performance réelle."
+  }
+];
+
+// ============================================================
+// SVG CHARTS
+// ============================================================
+function getChart(type) {
+  const charts = {
+
+    fvg_bull: `<svg viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="45"  x2="560" y2="45"  stroke="#1e2840" stroke-width="1"/>
+      <line x1="0" y1="90"  x2="560" y2="90"  stroke="#1e2840" stroke-width="1"/>
+      <line x1="0" y1="135" x2="560" y2="135" stroke="#1e2840" stroke-width="1"/>
+      <!-- Bougie 1 baissière -->
+      <line x1="70" y1="100" x2="70" y2="128" stroke="#f16b6b" stroke-width="1.5"/>
+      <rect x="60" y="100" width="20" height="22" rx="2" fill="#f16b6b" opacity="0.75"/>
+      <!-- Bougie 2 impulsive haussière -->
+      <line x1="140" y1="148" x2="140" y2="32" stroke="#3ecf8e" stroke-width="1.5"/>
+      <rect x="130" y="48" width="20" height="88" rx="2" fill="#3ecf8e"/>
+      <!-- Bougie 3 haussière -->
+      <line x1="210" y1="52" x2="210" y2="36" stroke="#3ecf8e" stroke-width="1.5"/>
+      <rect x="200" y="52" width="20" height="28" rx="2" fill="#3ecf8e" opacity="0.7"/>
+      <!-- FVG zone : entre mèche haute B1=100 et mèche basse B3=80 -->
+      <rect x="50" y="80" width="190" height="20" rx="4" fill="rgba(79,142,247,0.13)" stroke="rgba(79,142,247,0.55)" stroke-width="1" stroke-dasharray="5,3"/>
+      <text x="145" y="93" fill="#4f8ef7" font-size="10" font-family="DM Mono,monospace" text-anchor="middle" font-weight="700">FVG</text>
+      <text x="70"  y="172" fill="rgba(255,255,255,0.35)" font-size="8" font-family="DM Mono,monospace" text-anchor="middle">Bougie 1</text>
+      <text x="140" y="172" fill="rgba(255,255,255,0.35)" font-size="8" font-family="DM Mono,monospace" text-anchor="middle">Bougie 2</text>
+      <text x="210" y="172" fill="rgba(255,255,255,0.35)" font-size="8" font-family="DM Mono,monospace" text-anchor="middle">Bougie 3</text>
+      <!-- Retour price sur FVG -->
+      <polyline points="270,38 310,38 330,55 350,88 368,90" fill="none" stroke="#4f8ef7" stroke-width="1.8" stroke-dasharray="5,3"/>
+      <text x="290" y="32" fill="#4f8ef7" font-size="8.5" font-family="DM Mono,monospace">Retour sur FVG</text>
+      <!-- Continuation -->
+      <polyline points="368,90 400,68 435,42 470,20" fill="none" stroke="#3ecf8e" stroke-width="2.2" stroke-linecap="round"/>
+      <polygon points="472,16 460,26 474,28" fill="#3ecf8e"/>
+      <!-- Lignes FVG -->
+      <line x1="50" y1="80"  x2="560" y2="80"  stroke="rgba(79,142,247,0.28)" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="50" y1="100" x2="560" y2="100" stroke="rgba(79,142,247,0.28)" stroke-width="1" stroke-dasharray="4,4"/>
+      <text x="252" y="77"  fill="rgba(79,142,247,0.55)" font-size="7" font-family="DM Mono,monospace">Mèche basse Bougie 3</text>
+      <text x="252" y="113" fill="rgba(79,142,247,0.55)" font-size="7" font-family="DM Mono,monospace">Mèche haute Bougie 1</text>
+    </svg>`,
+
+    order_block: `<svg viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="50"  x2="560" y2="50"  stroke="#1e2840" stroke-width="1"/>
+      <line x1="0" y1="100" x2="560" y2="100" stroke="#1e2840" stroke-width="1"/>
+      <line x1="0" y1="145" x2="560" y2="145" stroke="#1e2840" stroke-width="1"/>
+      <!-- Contexte baissier -->
+      <rect x="20" y="72"  width="16" height="28" rx="2" fill="#f16b6b" opacity="0.45"/>
+      <rect x="44" y="80"  width="16" height="28" rx="2" fill="#f16b6b" opacity="0.45"/>
+      <rect x="68" y="88"  width="16" height="28" rx="2" fill="#f16b6b" opacity="0.45"/>
+      <rect x="92" y="96"  width="16" height="28" rx="2" fill="#f16b6b" opacity="0.45"/>
+      <!-- ORDER BLOCK encadré -->
+      <rect x="116" y="104" width="22" height="34" rx="2" fill="#f16b6b" stroke="#f0b429" stroke-width="2.5"/>
+      <text x="127" y="152" fill="#f0b429" font-size="9" font-family="DM Mono,monospace" text-anchor="middle" font-weight="700">OB</text>
+      <!-- Zone OB étendue -->
+      <rect x="114" y="102" width="444" height="38" rx="4" fill="rgba(240,180,41,0.06)" stroke="rgba(240,180,41,0.38)" stroke-width="1" stroke-dasharray="5,3"/>
+      <!-- Explosion haussière -->
+      <rect x="146" y="85" width="18" height="32" rx="2" fill="#3ecf8e" opacity="0.7"/>
+      <rect x="172" y="62" width="18" height="36" rx="2" fill="#3ecf8e" opacity="0.85"/>
+      <rect x="198" y="42" width="18" height="36" rx="2" fill="#3ecf8e"/>
+      <rect x="224" y="26" width="18" height="30" rx="2" fill="#3ecf8e"/>
+      <!-- Pullback vers OB -->
+      <polyline points="255,30 285,42 315,62 345,88 368,112 380,120" fill="none" stroke="#4f8ef7" stroke-width="1.8" stroke-dasharray="5,3"/>
+      <text x="295" y="36" fill="#4f8ef7" font-size="8.5" font-family="DM Mono,monospace">Pullback sur OB</text>
+      <!-- Rebond -->
+      <polyline points="380,120 412,94 446,66 484,40 520,18" fill="none" stroke="#3ecf8e" stroke-width="2.5" stroke-linecap="round"/>
+      <polygon points="522,14 510,26 524,28" fill="#3ecf8e"/>
+      <text x="426" y="14" fill="#3ecf8e" font-size="8.5" font-family="DM Mono,monospace">Rebond ↑</text>
+      <text x="380" y="96" fill="rgba(240,180,41,0.65)" font-size="8" font-family="DM Mono,monospace">ZONE ORDER BLOCK</text>
+    </svg>`,
+
+    liquidity: `<svg viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="50"  x2="560" y2="50"  stroke="#1e2840" stroke-width="1"/>
+      <line x1="0" y1="100" x2="560" y2="100" stroke="#1e2840" stroke-width="1"/>
+      <line x1="0" y1="145" x2="560" y2="145" stroke="#1e2840" stroke-width="1"/>
+      <!-- Ligne liquidité -->
+      <line x1="0" y1="38" x2="560" y2="38" stroke="rgba(241,107,107,0.4)" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="8" y="33" fill="rgba(241,107,107,0.65)" font-size="7.5" font-family="DM Mono,monospace">LIQUIDITÉ — STOPS CONCENTRÉS</text>
+      <!-- Prix oscillant avec 2 touches -->
+      <polyline points="25,145 65,118 95,78 128,38 162,80 202,112 242,80 272,38 304,80 342,112" fill="none" stroke="#4f8ef7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="128" cy="38" r="6" fill="rgba(241,107,107,0.2)" stroke="#f16b6b" stroke-width="2"/>
+      <text x="128" y="24" fill="#f16b6b" font-size="9" font-family="DM Mono,monospace" text-anchor="middle">①</text>
+      <circle cx="272" cy="38" r="6" fill="rgba(241,107,107,0.2)" stroke="#f16b6b" stroke-width="2"/>
+      <text x="272" y="24" fill="#f16b6b" font-size="9" font-family="DM Mono,monospace" text-anchor="middle">②</text>
+      <!-- Stop hunt spike au-dessus -->
+      <polyline points="342,112 362,62 372,20 383,38 394,112 425,132 462,152 510,160" fill="none" stroke="#f0b429" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="372" cy="20" r="7" fill="rgba(240,180,41,0.2)" stroke="#f0b429" stroke-width="2"/>
+      <text x="372" y="11" fill="#f0b429" font-size="9" font-family="DM Mono,monospace" text-anchor="middle">STOP HUNT !</text>
+      <text x="355" y="172" fill="rgba(240,180,41,0.55)" font-size="7.5" font-family="DM Mono,monospace">Stops déclenchés → inversion ↓</text>
+    </svg>`
+  };
+  return charts[type] || null;
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let shuffled = [];
+let current  = 0;
+let score    = 0;
+let answered = false;
+let results  = [];
+let playerName = '';
+
+const MODULES = [
+  "🛡️ GESTION DU RISQUE",
+  "⚡ FAIR VALUE GAP (FVG)",
+  "🧱 ORDER BLOCK",
+  "💧 LIQUIDITÉ & ZONES CLÉS",
+  "📉 DRAWDOWN",
+  "📋 RÈGLE DE CONSISTANCE"
+];
+let moduleScores = {};
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startGame() {
+  const input = document.getElementById('player-name').value.trim();
+  playerName = input || 'Trader';
+  shuffled = shuffle(QUESTIONS);
+  current = 0; score = 0; answered = false; results = [];
+  MODULES.forEach(m => moduleScores[m] = { correct:0, total:0 });
+  showScreen('game');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function renderQuestion() {
+  const q = shuffled[current];
+  answered = false;
+
+  const pct = Math.round((current / shuffled.length) * 100);
+  const ml = document.getElementById('module-label');
+  ml.textContent = q.module;
+  ml.style.color = q.moduleColor;
+  ml.style.background = q.moduleColor + '15';
+  ml.style.borderColor = q.moduleColor + '35';
+
+  document.getElementById('q-counter').textContent = `Question ${current+1}/${shuffled.length}`;
+  document.getElementById('q-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('score-badge').textContent = `✦ ${score} pts`;
+
+  const card = document.getElementById('q-card');
+  card.style.animation = 'none'; void card.offsetWidth;
+  card.style.animation = 'popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both';
+
+  document.getElementById('q-number').textContent = `QUESTION ${String(current+1).padStart(2,'0')}`;
+  document.getElementById('q-text').textContent = q.text;
+
+  const cw = document.getElementById('chart-wrap');
+  if (q.chart) { cw.style.display='block'; document.getElementById('chart-svg').innerHTML=getChart(q.chart); }
+  else { cw.style.display='none'; }
+
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(i, btn);
+    optDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className = 'feedback-box';
+  document.getElementById('next-btn').className = 'next-btn';
+}
+
+function selectAnswer(idx, btn) {
+  if (answered) return;
+  answered = true;
+  const q = shuffled[current];
+  if (!moduleScores[q.module]) moduleScores[q.module] = {correct:0, total:0};
+  moduleScores[q.module].total++;
+
+  document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+
+  const isCorrect = idx === q.correct;
+  results.push({ q, userAnswer:idx, correct:isCorrect });
+
+  const fb = document.getElementById('feedback');
+  if (isCorrect) {
+    btn.classList.add('correct');
+    score += 10;
+    moduleScores[q.module].correct++;
+    document.getElementById('score-badge').textContent = `✦ ${score} pts`;
+    fb.className = 'feedback-box correct-fb show';
+    document.getElementById('fb-title').innerHTML = `<span class="ok">✓ CORRECT !</span>`;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.option-btn')[q.correct].classList.add('correct');
+    fb.className = 'feedback-box wrong-fb show';
+    document.getElementById('fb-title').innerHTML = `<span class="nope">✗ PAS TOUT À FAIT…</span>`;
+  }
+  document.getElementById('fb-explain').innerHTML = q.explanation;
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= shuffled.length) showResult();
+  else renderQuestion();
+}
+
+function showResult() {
+  showScreen('result');
+  const total   = shuffled.length;
+  const correct = results.filter(r => r.correct).length;
+  const pct     = Math.round((score / (total * 10)) * 100);
+  const perfect = correct === total;
+
+  let icon, title, msg;
+  if (perfect)      { icon='🏆'; title='SCORE PARFAIT !';    msg=`Félicitations ${playerName} ! Tu as répondu correctement à toutes les questions. Ton certificat est disponible.`; launchConfetti('confetti'); }
+  else if (pct>=75) { icon='🎯'; title='TRÈS BON NIVEAU !';  msg='Excellent travail. Quelques erreurs à revoir pour atteindre le score parfait et obtenir ton certificat.'; }
+  else if (pct>=50) { icon='📚'; title='EN PROGRESSION';     msg='Les bases sont là. Utilise le mode révision pour retravailler les concepts ratés, puis retente le quiz pour ton certificat.'; }
+  else              { icon='💪'; title='CONTINUE !';          msg='Ces concepts avancés demandent de la pratique. Révise les explications et rejoue — chaque erreur est un apprentissage !'; }
+
+  document.getElementById('result-icon').textContent = icon;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-score-big').textContent = `${score} / ${total*10} pts — ${pct}%`;
+  document.getElementById('result-msg').textContent = msg;
+
+  // Perfect banner
+  const bannerWrap = document.getElementById('perfect-banner-wrap');
+  if (perfect) {
+    bannerWrap.innerHTML = `<div class="perfect-banner"><p>🏆 Score parfait obtenu ! Ton certificat au nom de <strong>${playerName}</strong> est prêt. Clique sur "Mon Certificat" pour le récupérer.</p></div>`;
+  } else {
+    bannerWrap.innerHTML = `<div style="margin-bottom:16px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted2);padding:12px 20px;border:1px dashed var(--border);border-radius:10px;max-width:420px;">🔒 Le certificat est débloqué uniquement avec un score de 20/20. Il te manque ${total - correct} bonne(s) réponse(s).</div>`;
+  }
+
+  // Cert button
+  document.getElementById('btn-cert').style.display = perfect ? 'inline-flex' : 'none';
+
+  // Cert data
+  document.getElementById('cert-name-display').textContent = playerName.toUpperCase();
+  document.getElementById('cert-score').textContent   = `${score}/${total*10}`;
+  document.getElementById('cert-correct').textContent = `${correct}/${total}`;
+  document.getElementById('cert-date').textContent    = `Complété le ${new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}`;
+
+  // Module bars
+  const barsDiv = document.getElementById('result-bars');
+  barsDiv.innerHTML = '';
+  const colors = {
+    "🛡️ GESTION DU RISQUE":"#3ecf8e",
+    "⚡ FAIR VALUE GAP (FVG)":"#4f8ef7",
+    "🧱 ORDER BLOCK":"#f0b429",
+    "💧 LIQUIDITÉ & ZONES CLÉS":"#f16b6b",
+    "📉 DRAWDOWN":"#f16b6b",
+    "📋 RÈGLE DE CONSISTANCE":"#7c5cfc"
+  };
+  MODULES.forEach(m => {
+    const s = moduleScores[m];
+    if (!s || s.total===0) return;
+    const p   = Math.round((s.correct/s.total)*100);
+    const col = colors[m] || '#7c5cfc';
+    const nm  = m.replace(/^.{2}\s/,'');
+    const row = document.createElement('div');
+    row.className = 'result-bar-row';
+    row.innerHTML = `
+      <div class="result-bar-label">${nm}</div>
+      <div class="result-bar-track"><div class="result-bar-fill" style="--w:${p}%;background:${col}"></div></div>
+      <div class="result-bar-pct">${p}%</div>`;
+    barsDiv.appendChild(row);
+  });
+}
+
+function showReview() {
+  showScreen('review');
+  const content = document.getElementById('review-content');
+  content.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  const wrong   = results.filter(r => !r.correct);
+  const correct = results.filter(r =>  r.correct);
+  const all     = [...wrong, ...correct];
+
+  if (wrong.length === 0) {
+    content.innerHTML = `<div style="text-align:center;padding:40px;color:var(--accent2);font-size:1.1rem;font-weight:600;">🎉 Parfait ! Tu as tout réussi.</div>`;
+    return;
+  }
+
+  const summary = document.createElement('div');
+  summary.style.cssText='background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;';
+  summary.innerHTML=`<div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--red);">✗ ${wrong.length} à revoir</div><div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--green);">✓ ${correct.length} correctes</div><div style="font-size:0.8rem;color:var(--muted2);">Erreurs affichées en premier.</div>`;
+  content.appendChild(summary);
+
+  all.forEach((r, idx) => {
+    const item = document.createElement('div');
+    item.className = `review-item ${r.correct?'correct-item':'wrong-item'}`;
+    item.style.animationDelay = `${idx*0.05}s`;
+
+    const answersHTML = r.q.options.map((opt, i) => {
+      let cls='';
+      if (i===r.q.correct) cls='the-correct';
+      else if (i===r.userAnswer && !r.correct) cls='your-wrong';
+      const icon = i===r.q.correct?'✓ ':(i===r.userAnswer&&!r.correct?'✗ ':'');
+      return `<div class="review-ans ${cls}">${icon}${letters[i]}. ${opt}</div>`;
+    }).join('');
+
+    item.innerHTML=`
+      <div class="review-q-label">
+        <span>Q${shuffled.indexOf(r.q)+1}</span>
+        <span class="review-status ${r.correct?'status-correct':'status-wrong'}">${r.correct?'✓ CORRECT':'✗ À REVOIR'}</span>
+        <span style="color:var(--muted);font-size:0.6rem">${r.q.module}</span>
+      </div>
+      <div class="review-q-text">${r.q.text}</div>
+      <div class="review-answers">${answersHTML}</div>
+      <div class="review-explanation">${r.q.explanation}</div>`;
+    content.appendChild(item);
+  });
+}
+
+function showCertificate() {
+  showScreen('certificate');
+  launchConfetti('confetti-cert');
+}
+
+function launchConfetti(id) {
+  const wrap = document.getElementById(id);
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const colors = ['#7c5cfc','#00d4aa','#f0b429','#3ecf8e','#4f8ef7','#fff','#f16b6b'];
+  for (let i=0; i<80; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.cssText=`left:${Math.random()*100}%;top:-10px;background:${colors[Math.floor(Math.random()*colors.length)]};width:${5+Math.random()*9}px;height:${5+Math.random()*9}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${2+Math.random()*2.5}s;animation-delay:${Math.random()}s;`;
+    wrap.appendChild(p);
+  }
+  setTimeout(()=>{if(wrap) wrap.innerHTML='';}, 5000);
+}
+
+function restartGame() { showScreen('welcome'); }
+</script>
+</body>
+</html>
