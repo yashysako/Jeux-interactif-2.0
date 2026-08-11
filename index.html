@@ -360,6 +360,7 @@ const MODULES = [
   { id:'risk',   name:'La gestion du risque',       color:'#FF4757' },
   { id:'mental', name:'Le mental et la discipline',  color:'#B0BEC5' },
   { id:'method', name:'Méthode et lecture de marché',color:'#F97316' },
+  { id:'struct', name:'Structure : CHoCH et BOS',    color:'#A78BFA' },
   { id:'fvg',    name:'Fair Value Gap',              color:'#4F8EF7' },
   { id:'ob',     name:'Order Block',                 color:'#FBBF24' },
   { id:'liq',    name:'Zones de liquidité',          color:'#FF6B35' },
@@ -453,7 +454,7 @@ const QUESTIONS = [
   why:"Les concepts ne sont pas faux — les institutions les connaissent aussi. Le problème est qu'un trader qui applique une recette publique <strong>entre au même endroit, au même moment, avec le même stop que des milliers d'autres</strong>. C'est précisément là que se trouve la liquidité." },
 
 /* ── MÉTHODE ── */
-{ m:'method', src:'Module 10 — L\'analyse top-down',
+{ m:'method', src:'Module 10 — L\'analyse top-down (guide débutant)',
   text:"Dans quel ordre le guide fait-il descendre les unités de temps ?",
   options:[
     "1 minute, puis 5 minutes, puis 4 heures pour confirmer",
@@ -473,7 +474,7 @@ const QUESTIONS = [
   correct:3,
   why:"Le <strong>chevauchement Londres–New York, de 8h00 à 12h00</strong> heure de New York, concentre la liquidité et la volatilité. En dehors, tu paies plus cher pour des mouvements qui n'aboutissent pas." },
 
-{ m:'method', src:'Module 8 — Combiner les trois concepts',
+{ m:'method', src:'Module 9 — Tout mettre ensemble',
   text:"Que faire quand deux concepts se contredisent sur une même zone ?",
   options:[
     "Prendre le trade avec une taille réduite de moitié",
@@ -483,8 +484,49 @@ const QUESTIONS = [
   correct:2,
   why:"Le guide est explicite : <strong>si deux concepts se contredisent, tu ne prends pas le trade</strong>. L'absence de signal est une réponse en soi. C'est la superposition qui filtre, pas les concepts pris séparément." },
 
+/* ── STRUCTURE : CHoCH ET BOS ── */
+{ m:'struct', src:'Module 5 — La structure : CHoCH et BOS', chart:'struct',
+  text:"Sur ce schéma, que signale l'étiquette CHoCH ?",
+  options:[
+    "Le premier creux qui cède dans l'autre sens : la direction bascule",
+    "Le sommet le plus haut atteint sur la période",
+    "La clôture au-delà du dernier sommet, qui confirme la hausse",
+    "Le moment où le volume dépasse sa moyenne"],
+  correct:0,
+  why:"Un CHoCH — <em>change of character</em> — est <strong>le premier creux qui cède dans l'autre sens</strong> après une série de hausses. C'est le premier avertissement d'un retournement, pas encore sa confirmation." },
+
+{ m:'struct', src:'Module 5 — La structure : CHoCH et BOS',
+  text:"Que fait le guide dès qu'un CHoCH apparaît contre le sens de la tendance ?",
+  options:[
+    "Il double la position pour moyenner à la baisse",
+    "Il inverse immédiatement le sens du trade",
+    "Il cesse de chercher des trades dans l'ancien sens et attend un BOS pour valider le nouveau",
+    "Il ignore le signal tant que le prix n'a pas doublé sa distance"],
+  correct:2,
+  why:"Le CHoCH <strong>ne met pas dans un trade, il sort du sens précédent</strong>. On arrête de chercher dans l'ancien sens, puis on attend un <strong>BOS dans la nouvelle direction</strong> avant de considérer le retournement établi." },
+
+{ m:'struct', src:'Module 5 — La structure : CHoCH et BOS',
+  text:"À quelle condition une cassure de niveau compte-t-elle comme un BOS ou un CHoCH ?",
+  options:[
+    "Dès qu'une mèche dépasse le niveau, même en cours de bougie",
+    "Seulement si une bougie clôture au-delà du niveau",
+    "Seulement si trois bougies consécutives dépassent le niveau",
+    "Dès que le prix s'approche à moins d'un dollar du niveau"],
+  correct:1,
+  why:"La structure ne se lit <strong>qu'en clôture</strong>. Une mèche qui dépasse un niveau ne change rien tant que la bougie n'est pas fermée — c'est la même exigence que la règle de confirmation du reste du guide." },
+
+{ m:'struct', src:'Module 9 — Tout mettre ensemble',
+  text:"Dans quel ordre le guide fait-il la lecture avant d'entrer ?",
+  options:[
+    "L'entrée d'abord, la structure sert à justifier après coup",
+    "Les zones d'abord, la structure seulement si le trade tourne mal",
+    "La liquidité d'abord, puis la structure, puis les zones",
+    "La structure, puis les zones, puis la liquidité, et l'entrée en dernier"],
+  correct:3,
+  why:"L'ordre n'est pas négociable : <strong>la structure donne le sens autorisé</strong>, les zones donnent le prix, la liquidité situe ce que le marché a une raison d'aller chercher, et l'entrée vient en dernier. Une zone parfaite dans le mauvais sens reste une mauvaise zone." },
+
 /* ── FAIR VALUE GAP ── */
-{ m:'fvg', src:'Module 5 — Le Fair Value Gap', chart:'fvg',
+{ m:'fvg', src:'Module 6 — Le Fair Value Gap', chart:'fvg',
   text:"Sur ce schéma, quel est le critère exact qui définit le fair value gap haussier encadré ?",
   options:[
     "Le point bas de la troisième bougie est situé au-dessus du point haut de la première",
@@ -494,7 +536,7 @@ const QUESTIONS = [
   correct:0,
   why:"Un FVG haussier existe quand <strong>le point bas de la troisième bougie se situe au-dessus du point haut de la première</strong>. L'espace entre les deux n'a été échangé par personne : c'est le gap. La bougie du milieu est l'impulsion qui l'a créé." },
 
-{ m:'fvg', src:'Module 5 — Le Fair Value Gap',
+{ m:'fvg', src:'Module 6 — Le Fair Value Gap',
   text:"Pourquoi le prix revient-il souvent combler un fair value gap ?",
   options:[
     "Parce que les régulateurs l'imposent aux teneurs de marché",
@@ -504,7 +546,7 @@ const QUESTIONS = [
   correct:1,
   why:"Un vide signifie qu'<strong>aucun échange n'a eu lieu à ces prix</strong>. Le marché a tendance à y revenir chercher de la contrepartie. Rien de magique : c'est une zone d'intérêt, pas une garantie." },
 
-{ m:'fvg', src:'Module 5 — Le Fair Value Gap',
+{ m:'fvg', src:'Module 6 — Le Fair Value Gap',
   text:"Quelle limite le guide pose-t-il explicitement sur les fair value gaps ?",
   options:[
     "Ils ne sont valables que sur le Forex",
@@ -515,7 +557,7 @@ const QUESTIONS = [
   why:"Un FVG est <strong>une zone d'intérêt, pas un signal d'entrée</strong> — il doit être confirmé par la structure et le contexte de tendance. Et dans une tendance forte, le prix peut en laisser plusieurs derrière lui sans jamais y revenir." },
 
 /* ── ORDER BLOCK ── */
-{ m:'ob', src:'Module 6 — L\'Order Block', chart:'ob',
+{ m:'ob', src:'Module 7 — L\'Order Block', chart:'ob',
   text:"Comment le guide définit-il l'order block visible sur ce schéma ?",
   options:[
     "Le sommet le plus élevé atteint avant le retournement",
@@ -525,7 +567,7 @@ const QUESTIONS = [
   correct:2,
   why:"L'order block est <strong>la zone de consolidation calme d'où part un mouvement franc</strong>. C'est là que de gros ordres se sont constitués avant de pousser le prix. Tu la reportes et tu attends que le prix y revienne." },
 
-{ m:'ob', src:'Module 6 — L\'Order Block',
+{ m:'ob', src:'Module 7 — L\'Order Block',
   text:"Quelle est la règle d'exécution sur un order block ?",
   options:[
     "Entrer pendant l'impulsion pour ne pas rater le mouvement",
@@ -535,7 +577,7 @@ const QUESTIONS = [
   correct:1,
   why:"Tu <strong>attends le retour sur la zone</strong> : pas d'anticipation, pas d'entrée pendant l'impulsion. Le stop se place de l'autre côté de la zone, avec une marge." },
 
-{ m:'ob', src:'Module 6 — L\'Order Block',
+{ m:'ob', src:'Module 7 — L\'Order Block',
   text:"Qu'arrive-t-il à un order block déjà retesté plusieurs fois ?",
   options:[
     "Il devient plus fiable à chaque test, comme un support",
@@ -546,7 +588,7 @@ const QUESTIONS = [
   why:"Un order block déjà retesté plusieurs fois <strong>perd sa force</strong> : les ordres qui s'y trouvaient ont été absorbés. Le guide recommande de privilégier les zones encore intactes — c'est aussi ce que fait EMBER SMC en retirant les zones invalidées." },
 
 /* ── LIQUIDITÉ ── */
-{ m:'liq', src:'Module 7 — Les zones de liquidité', chart:'liq',
+{ m:'liq', src:'Module 8 — Les zones de liquidité', chart:'liq',
   text:"Sur ce schéma, pourquoi le marché va-t-il chercher la zone au-dessus des sommets ?",
   options:[
     "Pour respecter un niveau de Fibonacci",
@@ -556,7 +598,7 @@ const QUESTIONS = [
   correct:3,
   why:"Les stops sont massés juste au-dessus des sommets récents. Cette poche est de la liquidité : <strong>pour qu'un gros ordre s'exécute, il faut une contrepartie</strong>, et une poche de stops en fournit une d'un coup." },
 
-{ m:'liq', src:'Module 7 — Les zones de liquidité',
+{ m:'liq', src:'Module 8 — Les zones de liquidité',
   text:"Qu'est-ce qui distingue un balayage d'une véritable cassure ?",
   options:[
     "Le rejet immédiat qui suit : le prix repasse aussitôt du bon côté",
@@ -566,7 +608,7 @@ const QUESTIONS = [
   correct:0,
   why:"Ce qui distingue les deux est <strong>le rejet immédiat qui suit</strong>. Si le prix reste au-delà et construit de nouveaux niveaux, ce n'était pas un piège : c'était une cassure, et se positionner à contresens coûte cher." },
 
-{ m:'liq', src:'Module 7 — Les zones de liquidité',
+{ m:'liq', src:'Module 8 — Les zones de liquidité',
   text:"Quand le guide recommande-t-il d'entrer sur un balayage ?",
   options:[
     "Pendant la mèche, pour obtenir le meilleur prix",
@@ -577,7 +619,7 @@ const QUESTIONS = [
   why:"Jamais pendant la mèche. On attend <strong>le retour dans la structure</strong>, puis on entre dans le sens du rejet. Anticiper la mèche revient à se placer exactement là où les stops se font prendre." },
 
 /* ── DRAWDOWN ET CONSISTANCE ── */
-{ m:'prop', src:'Module 10 — Le drawdown',
+{ m:'prop', src:'Module 11 — Le drawdown',
   text:"Quelle est la différence entre drawdown journalier et drawdown total ?",
   options:[
     "Le journalier concerne le Forex, le total les actions",
@@ -587,7 +629,7 @@ const QUESTIONS = [
   correct:2,
   why:"Le <strong>drawdown journalier se réinitialise chaque jour</strong> ; le <strong>drawdown total court sur toute la vie du compte et ne se réinitialise pas</strong>. C'est ce second qui met fin au challenge." },
 
-{ m:'prop', src:'Module 10 — Le drawdown',
+{ m:'prop', src:'Module 11 — Le drawdown',
   text:"Quels ordres de grandeur le guide donne-t-il pour les limites pratiquées par les sociétés de financement ?",
   options:[
     "Environ 0,5 % en journalier et 2 % au total",
@@ -597,7 +639,7 @@ const QUESTIONS = [
   correct:1,
   why:"En pratique, la plupart des sociétés appliquent <strong>4 à 5 % en journalier et 8 à 12 % au total</strong>. Ces chiffres sont indicatifs : le guide insiste pour que tu lises les règles exactes de la société choisie, en particulier le mode de calcul du trailing." },
 
-{ m:'prop', src:'Module 10 — Le drawdown',
+{ m:'prop', src:'Module 11 — Le drawdown',
   text:"Quel mode de calcul du drawdown le guide qualifie-t-il de plus piégeux ?",
   options:[
     "Le statique, fixé sur le capital de départ",
@@ -607,7 +649,7 @@ const QUESTIONS = [
   correct:2,
   why:"Le <strong>trailing</strong> est le plus piégeux : son seuil monte avec tes profits, donc tes gains deviennent du capital à protéger. Le guide conseille de sécuriser tôt en remontant le stop au point d'entrée dès que le mouvement est lancé." },
 
-{ m:'prop', src:'Module 11 — La règle de consistance',
+{ m:'prop', src:'Module 12 — La règle de consistance',
   text:"Comment se calcule le ratio de consistance ?",
   options:[
     "Nombre de trades gagnants divisé par nombre total de trades",
@@ -617,7 +659,7 @@ const QUESTIONS = [
   correct:1,
   why:"<strong>Consistance = profit du meilleur jour ÷ profit total × 100.</strong> Si ton meilleur jour pèse trop dans le total, la société considère que ta stratégie n'est pas reproductible." },
 
-{ m:'prop', src:'Module 11 — La règle de consistance',
+{ m:'prop', src:'Module 12 — La règle de consistance',
   text:"Profit total de 3 000 $, meilleure journée à 1 200 $, plafond de la société fixé à 30 %. Que se passe-t-il ?",
   options:[
     "Le ratio est de 40 % : au-delà du plafond, tu ne valides pas",
@@ -627,7 +669,7 @@ const QUESTIONS = [
   correct:0,
   why:"1 200 ÷ 3 000 = <strong>40 %</strong>, au-delà du plafond de 30 %. Tu ne valides pas, <em>même en étant profitable sur l'ensemble</em>. C'est précisément ce que cette règle sanctionne : une performance portée par une seule journée." },
 
-{ m:'prop', src:'Module 11 — La règle de consistance',
+{ m:'prop', src:'Module 12 — La règle de consistance',
   text:"Quelle pratique le guide recommande-t-il pour lisser ses journées ?",
   options:[
     "Augmenter la taille les jours où le marché est favorable",
@@ -637,7 +679,7 @@ const QUESTIONS = [
   correct:2,
   why:"Les <strong>prises partielles</strong> — fermer une partie au premier objectif, laisser courir le reste — lissent les journées et évitent le gain isolé qui fait exploser le ratio. Le risque, lui, reste constant : jamais de lot gonflé sur un setup qui paraît parfait." },
 
-{ m:'prop', src:'Module 9 — Société de financement ou compte réel',
+{ m:'prop', src:'Module 10 — Société de financement ou compte réel',
   text:"Quelle précaution le guide impose-t-il avant de payer un challenge ?",
   options:[
     "Choisir la société la moins chère du marché",
@@ -676,6 +718,30 @@ function getChart(type){
       <text x="330" y="28" fill="#4F8EF7" font-size="9" font-family="IBM Plex Mono,monospace">retour sur la zone</text>
       <polyline points="410,94 450,68 490,40 525,22" fill="none" stroke="#00D4AA" stroke-width="2.4" stroke-linecap="round"/>
       <polygon points="535,16 521,26 527,32" fill="#00D4AA"/>
+    </svg>`,
+
+    struct:`<svg viewBox="0 0 560 190" role="img" aria-label="Une série de sommets et creux montants marqués BOS, puis un creux qui cède, marqué CHoCH, suivi d'une série descendante">
+      <line x1="0" y1="50" x2="560" y2="50" stroke="#1F2937"/>
+      <line x1="0" y1="100" x2="560" y2="100" stroke="#1F2937"/>
+      <line x1="0" y1="150" x2="560" y2="150" stroke="#1F2937"/>
+      <polyline points="24,150 78,104 118,128 172,70 214,100 264,38" fill="none" stroke="#00D4AA" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+      <polyline points="264,38 320,118 366,82 420,146 462,116 520,168" fill="none" stroke="#FF4757" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+      <line x1="78" y1="104" x2="150" y2="104" stroke="#00D4AA" stroke-width="1.4" stroke-dasharray="5,4" opacity=".8"/>
+      <text x="82" y="98" fill="#00D4AA" font-size="9" font-family="IBM Plex Mono,monospace">BOS</text>
+      <line x1="172" y1="70" x2="248" y2="70" stroke="#00D4AA" stroke-width="1.4" stroke-dasharray="5,4" opacity=".8"/>
+      <text x="140" y="64" fill="#00D4AA" font-size="9" font-family="IBM Plex Mono,monospace">BOS</text>
+      <line x1="214" y1="100" x2="308" y2="100" stroke="#FBBF24" stroke-width="1.6" stroke-dasharray="5,4"/>
+      <text x="228" y="116" fill="#FBBF24" font-size="10" font-family="IBM Plex Mono,monospace">CHoCH</text>
+      <line x1="320" y1="118" x2="410" y2="118" stroke="#FF4757" stroke-width="1.4" stroke-dasharray="5,4" opacity=".8"/>
+      <text x="324" y="134" fill="#FF4757" font-size="9" font-family="IBM Plex Mono,monospace">BOS</text>
+      <circle cx="172" cy="70" r="3.5" fill="#00D4AA"/>
+      <circle cx="214" cy="100" r="3.5" fill="#00D4AA"/>
+      <circle cx="264" cy="38" r="3.5" fill="#00D4AA"/>
+      <circle cx="366" cy="82" r="3.5" fill="#FF4757"/>
+      <circle cx="420" cy="146" r="3.5" fill="#FF4757"/>
+      <text x="258" y="28" fill="#00D4AA" font-size="9" font-family="IBM Plex Mono,monospace" text-anchor="middle">HH</text>
+      <text x="360" y="74" fill="#FF4757" font-size="9" font-family="IBM Plex Mono,monospace" text-anchor="middle">LH</text>
+      <text x="424" y="164" fill="#FF4757" font-size="9" font-family="IBM Plex Mono,monospace" text-anchor="middle">LL</text>
     </svg>`,
 
     ob:`<svg viewBox="0 0 560 190" role="img" aria-label="Consolidation calme suivie d'un départ franc, puis retour sur la zone">
